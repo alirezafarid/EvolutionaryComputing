@@ -3,6 +3,7 @@ import org.vu.contest.ContestEvaluation;
 
 import java.util.Random;
 import java.util.Properties;
+import java.util.Arrays;
 
 public class player99 implements ContestSubmission
 {
@@ -10,8 +11,9 @@ public class player99 implements ContestSubmission
 	ContestEvaluation evaluation_;
     private int evaluations_limit_;
     double range;
-	
+    
     double[][] population;
+    double[][] parents;
     
 	public player99()
 	{
@@ -20,11 +22,14 @@ public class player99 implements ContestSubmission
         range = 5;
 	}
 	
+    
 	public void setSeed(long seed)
 	{
 		// Set seed of algortihms random process
 		rnd_.setSeed(seed);
 	}
+    
+    
 
 	public void setEvaluation(ContestEvaluation evaluation)
 	{
@@ -51,18 +56,34 @@ public class player99 implements ContestSubmission
     
     public void initialize_population(int size)
     {
-        population = new double[size][10];
+        this.population = new double[size][10];
         
-        for (int i=0; i< population.length;i++)
+        for (int i=0; i< this.population.length;i++)
         {
-            for (int j=0; j< population[i].length;j++)
+            for (int j=0; j< this.population[i].length;j++)
             {
+     
+                this.population[i][j] = range * rnd_.nextInt(2) * rnd_.nextDouble();
                
-                
-                population[i][j] = range * rnd_.nextInt(2) * rnd_.nextDouble();
             }
         }
     }
+    
+    public void initialize_parents(int size)
+    {
+        parents = new double[size][10];
+        
+        for (int i=0; i< parents.length;i++)
+        {
+            for (int j=0; j< parents[i].length;j++)
+            {
+
+                parents[i][j] = 0;
+            }
+        }
+    }
+    
+    
     
     public double get_fitness(double[] individual)
     {
@@ -104,21 +125,63 @@ public class player99 implements ContestSubmission
     
 	public void run()
 	{
-        int population_size = 900;
+        int population_size = 20;
+        int parents_size = 100;
         initialize_population(population_size);
+        
         int evals = 0;
+        int temp = 0;
         double individual;
         
-        //System.out.println("Evaluation limit is:" + evaluations_limit_ + ".");
+        double fitness[][] = new double[population_size][2];
         
-        while(evals<population_size){
+        double  parent[] = new double[parents_size];
+        
+        System.out.println( evaluations_limit_ );
+        
+        evaluations_limit_ = 2000;
+        
+//        while(evals<evaluations_limit_){
+        
+            //select the fittest parents for variation
+            for (int i=0; i <population_size;i++)
+            {
+                fitness[i][0] = i;
+                fitness[i][1] = get_fitness(population[i]);
+                
+                evals++;
+            }
+        //sort based on fitness
+        for(int i=1; i < population_size;i++)
+        {
+            int index = i;
+            double indexValue = fitness[i][1];
             
-            
-            Double fitness = get_fitness(population[evals]);
-            
-            evals++;
-    
+            for (int j=i; j>0; j--)
+            {
+                if  (fitness[j-1][1] > indexValue)
+                {
+                    fitness[j][1] = fitness[j-1][1];
+                }else
+                {
+                    fitness[j][1] = indexValue;
+                }
+            }
         }
+            
+            
+            for (int i=0;i <population_size; i++)
+            {
+                System.out.println(fitness[i][1]);
+            }
+//            System.out.println("\n\n\n");
+            // sort population
+            //pick the fittest as parent
+            
+            
+           
+    
+      //  }
         //select fittests as the parents
         //crossover parents
         //mutate child
