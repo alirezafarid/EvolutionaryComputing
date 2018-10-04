@@ -1,0 +1,10 @@
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=0 > storeresults0.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=1 > storeresults1.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=2 > storeresults2.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=3 > storeresults3.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=4 > storeresults4.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=5 > storeresults5.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=6 > storeresults6.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=7 > storeresults7.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=8 > storeresults8.txt
+java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=9 > storeresults9.txt
