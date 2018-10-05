@@ -68,13 +68,17 @@ public class player99 implements ContestSubmission
         double lower = -5.0;
         for(int i = 0; i < size; i++){
             
+            
             indv = new individual();
             double vector[] = new  double[10];
             for (int j=0; j< vector.length;j++)
             {
-                vector[j]= this.rnd_.nextDouble() * (upper - lower) + lower;
+                
+                vector[j]= Math.random() * (upper - lower) + lower;
+ 	        System.out.print(vector[j]);
+	        System.out.print("\t");
             } 
-            
+            System.out.println("\n\n");
             indv.set_vector(vector);
             indv.set_age(1);
             indv.set_id(counter++);
@@ -92,8 +96,20 @@ public class player99 implements ContestSubmission
             this.evals++;
         }
         
-        Collections.sort(this.population,new CustomComparator(-1));
+        
+        //Collections.sort(this.population,new CustomComparator(-1));
+	
+	 for(individual indv: this.population)
+         {
+            System.out.print(indv.get_id());
+            System.out.print(" -->\t");
+            System.out.println(indv.get_fitness());
+         }
      }
+    
+    
+    
+    
     
     public double[] crossover(double[] vector1,double[] vector2)
     {
@@ -110,86 +126,77 @@ public class player99 implements ContestSubmission
         return child_vector;
     }
     
-    public double[] bitwise_crossover(double[] vector1,double[] vector2)
-    {
-        double child_vector[] = new double[10];
-
-        for (int i=0; i<10;i++)
-        {   if (i % 2 == 0 )
-            { child_vector[i] = vector1[i];}
-            else
-            {child_vector[i] = vector2[i];}
-        }
-        return child_vector;
-    }
-    
-
-    public double[] mutate_v(double[] child_vector)
-    {
-        for (int i=0; i <10; i++)
+    public double[] mutate(double[] child_vector)
+    {   //crossover point
+        
+        if (rnd_.nextDouble() < 0.65)
+            return child_vector;
+        
+        int point1 = rnd_.nextInt(10);
+        
+        int point2 = rnd_.nextInt(10);
+        while ( point2 == point1)
         {
-            if (rnd_.nextDouble() > 0.9)
-            {
-                double v = child_vector[i] + (2 * rnd_.nextDouble() - 1);
-                if (v >= -5 && v <= 5)
-                {
-                    child_vector[i] = child_vector[i] + v;
-                }
-            }
-            
+            point2 = rnd_.nextInt(10);
         }
+        double temp = child_vector[point1];
+        child_vector[point1] = child_vector[point2];
+        child_vector[point1] = temp;
         
         return child_vector;
     }
     
+    
+    
 	public void run()
 	{
-        int population_size = 1500;
-        int num_children = 900;
+        int population_size = 20;
+        int num_children = 10;
         evals = 0;
         
         
         initialize_population(population_size);
-
-        int eval_limit = evaluations_limit_ - population_size - num_children;
-         while(evals< eval_limit)
-         {
         
+        this.caclcuate_fitness();
+        
+      /*  
+        int final_eval = evaluations_limit_ - population_size - num_children;
+         while(evals< 500)
+         {
+       */ 
              //Fitness Calculation
-             this.caclcuate_fitness();
+            // this.caclcuate_fitness();
             
             //Parent Selection And Vartion
             
-            for(int i=0; i<num_children*2; i=i+2)
+           /* for(int i=0; i<num_children*2; i=i+2)
             {
                 double[] parent1_vector = population.get(i).get_vector();
                 double[] parent2_vector = population.get(i+1).get_vector();
-            
-                double[] child_vector =mutate_v(
+                
+                double[] child_vector =mutate(
                  crossover(parent1_vector, parent2_vector));
-            
+                
                 individual indv = new individual();
                 indv.set_vector(child_vector);
                 indv.set_fitness((double)evaluation_.evaluate(indv.get_vector()));
-                this.evals++;
                 indv.set_age(1);
                 indv.set_id(population_size+i);
                 this.population.add(indv);
-            
+                
 
-            }
+            } */
 
             //Survial Selection, birth rate = death rate
-             
-            Collections.sort(this.population,new CustomComparator(1));
+           /* Collections.sort(this.population,new CustomComparator(-1));
             for (int i=0; i<num_children;i++)
             {
                 population.remove(i);
             }
-           
+           */ 
         
              
-        }
+        // }
         
 
     
