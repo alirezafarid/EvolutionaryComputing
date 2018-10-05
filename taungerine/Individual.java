@@ -97,7 +97,6 @@ public class Individual implements Comparable<Individual> {
                 //else        L[i][j] = 1.0 / L[j][j] * (C[i][j] - sum);
                 if (i == j) {
                     if (sum < C[i][i]) {
-                        //
                         L[i][i] = Math.sqrt(C[i][i] - sum);
                     } else {
                         return diag(sigma);
@@ -148,7 +147,7 @@ public class Individual implements Comparable<Individual> {
 
         // mutate alpha
         for (int i = 0; i < K; i++) {
-            alpha[i] += beta * rnd_.nextGaussian();
+            //alpha[i] += beta * rnd_.nextGaussian();
             if (Math.PI < Math.abs(alpha[i])) {
                 alpha[i] -= 2 * Math.PI * Math.signum(alpha[i]);
             }
@@ -166,6 +165,11 @@ public class Individual implements Comparable<Individual> {
             for (int j = 0; j < N; j++) {
                 if (! Double.isNaN(L[i][j])) {
                     x[i] += L[i][j] * v[j];
+                    if (x[i] < -5.0) {
+                        x[i] = -5.0;
+                    } else if (5.0 < x[i]) {
+                        x[i] = 5.0;
+                    }
                 }
             }
         }

@@ -90,6 +90,7 @@ public class player99 implements ContestSubmission
         
         while(evals<evaluations_limit_){
             // Select parents
+            
             // Apply crossover / mutation operators
             //for (int i = 0; i < pop_size; i++) {
             //    children[i].crossover(parents[0], parents[1]);
