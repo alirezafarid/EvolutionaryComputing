@@ -99,7 +99,7 @@ public class player99 implements ContestSubmission
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     children[i*10+j].crossover(parents[i], parents[j]);
-                    children[i*10+j].mutate();
+                    children[i*10+j].mutation();
                 }
             }
             

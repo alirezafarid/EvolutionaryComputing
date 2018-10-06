@@ -1,26 +1,31 @@
 import java.lang.Math;
 import java.util.Random;
 
-public class Individual implements Comparable<Individual> {
+class Individual implements Comparable<Individual>
+{
     static final int N = 10;
     static final int K = N * (N - 1) / 2;
     
-    public double fitness  = Double.NEGATIVE_INFINITY;
-    public double[] x      = new double[N];
-    private double[] sigma = new double[N];
-    private double[] alpha = new double[K];
-    private Random rnd_;
-    private int id;
+    double[] x = new double[N];
+    double fitness;
+    int age;
+    int id;
+    int rank;
+    Random rnd;
+    int is_parent;
     
-    // hyperparameters
-    double tau_prime = 0.22;//0.22;
-    double tau       = 0.39;//0.39;
-    double beta      = 5.00;//5.00;
-    double epsilon   = 0.01;//0.01;
+    // CMA-ES variables
+    double tau_prime = 0.22;
+    double tau       = 0.39;
+    double beta      = 5.00;
+    double epsilon   = 0.01;
+    double[] sigma   = new double[N];
+    double[] alpha   = new double[K];
     
-    public Individual(int id, Random rnd_) {
-        this.id   = id;
-        this.rnd_ = rnd_;
+    public Individual(int id, Random rnd)
+    {
+        this.id  = id;
+        this.rnd = rnd;
         
         // initialize sigma
         for (int i = 0; i < N; i++) {
@@ -29,12 +34,12 @@ public class Individual implements Comparable<Individual> {
         
         // initialize alpha
         for (int i = 0; i < K; i++) {
-            alpha[i] = 0.0;
+            this.alpha[i] = 0.0;
         }
         
         // initialize x
         for (int i = 0; i < N; i++) {
-            x[i] = rnd_.nextDouble() * 10.0 - 5.0;
+            this.x[i] = rnd.nextDouble() * 10.0 - 5.0;
         }
     }
     
@@ -43,13 +48,71 @@ public class Individual implements Comparable<Individual> {
         return (int) Math.signum(other.fitness - this.fitness);
     }
     
-    private void printMatrix(double[][] A) {
+    
+    // Add all setter and getter functuons
+    
+    
+    public void crossover(Individual a, Individual b)
+    {
+        // set this.x as a function of a.x and b.x
+        // crossover sigma
+        for (int i = 0; i < N; i++) {
+            double r = rnd.nextDouble();
+            sigma[i] = (r * a.sigma[i] + (1.0 - r) * b.sigma[i] ) / 2;
+        }
+        
+        // crossover alpha
+        for (int i = 0; i < K; i++) {
+            double r = rnd.nextDouble();
+            alpha[i] = (r * a.alpha[i] + (1.0 - r) * b.alpha[i] ) / 2;
+        }
+        
+        // crossover x
+        for (int i = 0; i < N; i++) {
+            double r = rnd.nextDouble();
+            x[i]     = (r * a.x[i] + (1.0 - r) * b.x[i] ) / 2;
+        }
+    }
+    
+    public void mutation()
+    {
+        // Mutate this.x
+        // mutate sigma
+        double r = rnd.nextGaussian();
+        for (int i = 0; i < N; i++) {
+            sigma[i] *= Math.exp(tau_prime * r + tau * rnd.nextGaussian());
+            if (sigma[i] < epsilon) {
+                sigma[i] = epsilon;
+            }
+        }
+        
+        // mutate alpha
+        for (int i = 0; i < K; i++) {
+            alpha[i] += beta * rnd.nextGaussian();
+            if (Math.PI < Math.abs(alpha[i])) {
+                alpha[i] -= 2 * Math.PI * Math.signum(alpha[i]);
+            }
+        }
+        
+        // mutate x
+        double[] v = new double[N];
+        for (int i = 0; i < N; i++) {
+            v[i] = rnd.nextGaussian();
+        }
+        double[][] C = covarianceMatrix();
+        double[][] L = cholesky(C);
+        //check(C, L);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                System.out.print(A[i][j]);
-                System.out.print(" ");
+                if (! Double.isNaN(L[i][j])) {
+                    x[i] += L[i][j] * v[j];
+                    if (x[i] < -5.0) {
+                        x[i] = -5.0;
+                    } else if (5.0 < x[i]) {
+                        x[i] = 5.0;
+                    }
+                }
             }
-            System.out.println();
         }
     }
     
@@ -83,6 +146,7 @@ public class Individual implements Comparable<Individual> {
         return A;
     }
     
+    // CMA-ES functions //////////////////////////////////////////////
     // return Cholesky factor L of psd matrix A = L L^T
     public double[][] cholesky(double[][] C) {
         double[][] L = new double[N][N];
@@ -106,7 +170,7 @@ public class Individual implements Comparable<Individual> {
                 }
             }
             if (L[i][i] <= 0) {
-            //if (Double.isNaN(L[i][i])) {
+                //if (Double.isNaN(L[i][i])) {
                 throw new RuntimeException("Matrix not positive definite");
             }
         }
@@ -131,67 +195,9 @@ public class Individual implements Comparable<Individual> {
                 diff += Math.abs(C[i][j] - A[i][j]);
             }
         }
-        //System.out.print("Difference: ");
-        //System.out.print(diff);
-        //System.out.println();
+        System.out.print("Difference: ");
+        System.out.print(diff);
+        System.out.println();
     }
     
-    public void mutate() {
-        // mutate sigma
-        for (int i = 0; i < N; i++) {
-            sigma[i] *= Math.exp(tau_prime * rnd_.nextGaussian() + tau * rnd_.nextGaussian());
-            if (sigma[i] < epsilon) {
-                sigma[i] = epsilon;
-            }
-        }
-
-        // mutate alpha
-        for (int i = 0; i < K; i++) {
-            //alpha[i] += beta * rnd_.nextGaussian();
-            if (Math.PI < Math.abs(alpha[i])) {
-                alpha[i] -= 2 * Math.PI * Math.signum(alpha[i]);
-            }
-        }
-        
-        // mutate x
-        double[] v = new double[N];
-        for (int i = 0; i < N; i++) {
-            v[i] = rnd_.nextGaussian();
-        }
-        double[][] C = covarianceMatrix();
-        double[][] L = cholesky(C);
-        check(C, L);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (! Double.isNaN(L[i][j])) {
-                    x[i] += L[i][j] * v[j];
-                    if (x[i] < -5.0) {
-                        x[i] = -5.0;
-                    } else if (5.0 < x[i]) {
-                        x[i] = 5.0;
-                    }
-                }
-            }
-        }
-    }
-    
-    public void crossover(Individual a, Individual b) {
-        // crossover sigma
-        for (int i = 0; i < N; i++) {
-            double r = rnd_.nextDouble();
-            sigma[i] = (r * a.sigma[i] + (1.0 - r) * b.sigma[i] ) / 2;
-        }
-        
-        // crossover alpha
-        for (int i = 0; i < K; i++) {
-            double r = rnd_.nextDouble();
-            alpha[i] = (r * a.alpha[i] + (1.0 - r) * b.alpha[i] ) / 2;
-        }
-        
-        // crossover x
-        for (int i = 0; i < N; i++) {
-            double r = rnd_.nextDouble();
-            x[i]     = (r * a.x[i] + (1.0 - r) * b.x[i] ) / 2;
-        }
-    }
 }
