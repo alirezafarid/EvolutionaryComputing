@@ -126,9 +126,8 @@ class Individual implements Comparable<Individual>
         }
     }
     
-    public void mutation()
+    public void mutationA()
     {
-        // Mutate this.x
         // mutate sigma
         double r = rnd.nextGaussian();
         for (int i = 0; i < N; i++) {
@@ -145,7 +144,10 @@ class Individual implements Comparable<Individual>
                 alpha[i] -= 2 * Math.PI * Math.signum(alpha[i]);
             }
         }
-        
+    }
+    
+    public void mutationB()
+    {
         // mutate x
         double[] v = new double[N];
         for (int i = 0; i < N; i++) {
@@ -166,6 +168,12 @@ class Individual implements Comparable<Individual>
                 }
             }
         }
+    }
+    
+    public void mutation()
+    {
+        mutationA();
+        mutationB();
     }
     
     private double[][] covarianceMatrix() {
