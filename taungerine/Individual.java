@@ -18,7 +18,7 @@ class Individual implements Comparable<Individual>
     double tau_prime = 0.22;
     double tau       = 0.39;
     double beta      = 5.00;
-    double epsilon   = 0.01;
+    double epsilon   = 0.001;
     double[] sigma   = new double[N];
     double[] alpha   = new double[K];
     
@@ -40,6 +40,7 @@ class Individual implements Comparable<Individual>
         // initialize x
         for (int i = 0; i < N; i++) {
             this.x[i] = rnd.nextDouble() * 10.0 - 5.0;
+            //this.x[i] = rnd.nextDouble()*0.01;
         }
     }
     
@@ -71,6 +72,57 @@ class Individual implements Comparable<Individual>
         for (int i = 0; i < N; i++) {
             double r = rnd.nextDouble();
             x[i]     = (r * a.x[i] + (1.0 - r) * b.x[i] ) / 2;
+        }
+    }
+    
+    public void crossover2(Individual a, Individual b)
+    {
+        boolean[] source = new boolean[N];
+        for (int i = 0; i < N; i++) {
+            source[i] = rnd.nextBoolean();
+        }
+        
+        for (int i = 0; i < N; i++) {
+            if (source[i]) {
+                sigma[i] = a.sigma[i];
+                x[i]     = a.x[i];
+            } else {
+                sigma[i] = b.sigma[i];
+                x[i]     = b.x[i];
+            }
+        }
+        
+        for (int i = 1; i < N; i++) {
+            for (int j = 0; j < i; j++) {
+                int k = i * (i - 1) / 2 + j;
+                if (source[i] && source[j]) {
+                    alpha[k] = a.alpha[k];
+                } else if (!source[i] && !source[j]) {
+                    alpha[k] = b.alpha[k];
+                } else {
+                    alpha[k] = 0.0;
+                }
+            }
+        }
+    }
+    
+    public void crossover3(Individual a, Individual b)
+    {
+        double[] source = new double[N];
+        for (int i = 0; i < N; i++) {
+            source[i] = rnd.nextDouble();
+        }
+        
+        for (int i = 0; i < N; i++) {
+            sigma[i] = source[i]*a.sigma[i] + (1 - source[i])*b.sigma[i];
+            x[i]     = source[i]*a.x[i]     + (1 - source[i])*b.x[i];
+        }
+        
+        for (int i = 1; i < N; i++) {
+            for (int j = 0; j < i; j++) {
+                int k = i * (i - 1) / 2 + j;
+                alpha[k] = source[i]*source[j]*a.alpha[k] + (1 - source[i])*(1 - source[j])*b.alpha[k];
+            }
         }
     }
     
@@ -163,6 +215,9 @@ class Individual implements Comparable<Individual>
                     if (sum < C[i][i]) {
                         L[i][i] = Math.sqrt(C[i][i] - sum);
                     } else {
+                        for (int k = 0; k < K; k++) {
+                            alpha[k] = 0.0;
+                        }
                         return diag(sigma);
                     }
                 } else {

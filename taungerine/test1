@@ -8,3 +8,4 @@ java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=6
 java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=7 > storeresults7.txt
 java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=8 > storeresults8.txt
 java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=9 > storeresults9.txt
+python show.py
