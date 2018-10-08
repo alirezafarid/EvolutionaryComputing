@@ -22,14 +22,14 @@ class Individual implements Comparable<Individual>
     double[] sigma   = new double[N];
     double[] alpha   = new double[K];
     
-    public Individual(int id, Random rnd)
+    public Individual(int id, double sigma, Random rnd)
     {
         this.id  = id;
         this.rnd = rnd;
         
         // initialize sigma
         for (int i = 0; i < N; i++) {
-            sigma[i] = 1.0;
+            this.sigma[i] = sigma;
         }
         
         // initialize alpha

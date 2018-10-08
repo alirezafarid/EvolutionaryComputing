@@ -96,12 +96,10 @@ public class player99 implements ContestSubmission
 	{
 		// Run your algorithm here
         double P = 1.0;
-        int Q;
-        if (function[2]) {
-            Q = 400;
-        } else {
-            Q = 100;
-        }
+        int Q    = 100;
+        if (function[2]) Q = 400;
+        double sigma = 1.0;
+        if (function[3]) sigma = 0.01;
         
         int evals    = 0;
         int islands  = 1;
@@ -111,7 +109,7 @@ public class player99 implements ContestSubmission
         Individual[][] pop = new Individual[islands][pop_size];
         for (int i = 0; i < islands; i++) {
             for (int j = 0; j < pop_size; j++) {
-                pop[i][j]  = new Individual(i*pop_size+j, rnd_);
+                pop[i][j]  = new Individual(i*pop_size+j, sigma, rnd_);
             }
         }
         
