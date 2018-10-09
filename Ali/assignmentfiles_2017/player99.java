@@ -63,8 +63,8 @@ public class player99 implements ContestSubmission
     
     public void initialize_population(int size)
     {
-        int counter =0;
-        double  upper = 5.0;
+        int counter = 0;
+        double upper = 5.0;
         double lower = -5.0;
         for(int i = 0; i < size; i++){
             
@@ -109,6 +109,11 @@ public class player99 implements ContestSubmission
         }
         return child_vector;
     }
+
+    
+    
+
+    
     
     public double[] bitwise_crossover(double[] vector1,double[] vector2)
     {
@@ -122,13 +127,29 @@ public class player99 implements ContestSubmission
         }
         return child_vector;
     }
+   
+    public double[] single_mutate_v(double[] child_vector,int index)
+    {
+
+            if (rnd_.nextDouble() > 0.9)
+            {
+                double v = child_vector[index] + (2 * rnd_.nextDouble() - 1);
+                if (v >= -5 && v <= 5)
+                {
+                    child_vector[index] = child_vector[index] + v;
+                }
+            }
+
+        
+        return child_vector;
+    }
     
 
     public double[] mutate_v(double[] child_vector)
     {
         for (int i=0; i <10; i++)
         {
-            if (rnd_.nextDouble() > 0.9)
+            if (rnd_.nextDouble() > 0.95)
             {
                 double v = child_vector[i] + (2 * rnd_.nextDouble() - 1);
                 if (v >= -5 && v <= 5)
@@ -144,13 +165,13 @@ public class player99 implements ContestSubmission
     
 	public void run()
 	{
-        int population_size = 1500;
-        int num_children = 900;
+        int population_size = 1000;
+        int num_children = 200;
         evals = 0;
         
         
         initialize_population(population_size);
-
+        
         int eval_limit = evaluations_limit_ - population_size - num_children;
          while(evals< eval_limit)
          {
@@ -186,12 +207,11 @@ public class player99 implements ContestSubmission
             {
                 population.remove(i);
             }
-           
-        
-             
-        }
-        
 
-    
+             System.out.println(population.get(population_size-1).get_fitness());
+             //System.out.print("\n");
+        }
+       
 	}
+    
 }
