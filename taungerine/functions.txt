@@ -1,0 +1,19 @@
+SphereEvaluation
+not multimodal
+    structured
+    separable
+
+BentCigarFunction
+not multimodal
+not structured
+not separable
+
+SchaffersEvaluation
+    multimodal
+    structured
+not separable
+
+KatsuuraEvaluation
+    multimodal
+not structured
+not separable
