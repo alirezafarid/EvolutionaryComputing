@@ -1,6 +1,0 @@
-javac -cp contest.jar player99.java Individual.java
-jar cmf MainClass.txt submission.jar player99.class Individual.class
-java -jar testrun.jar -submission=player99 -evaluation=SphereEvaluation -seed=1
-java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=1
-java -jar testrun.jar -submission=player99 -evaluation=SchaffersEvaluation -seed=1
-java -jar testrun.jar -submission=player99 -evaluation=KatsuuraEvaluation -seed=1
