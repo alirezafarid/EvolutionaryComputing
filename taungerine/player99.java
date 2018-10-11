@@ -76,44 +76,54 @@ public class player99 implements ContestSubmission
         }
     }
     
-    public double distance(Individual a, Individual b) {
-        double distance = 0.0;
-        
-        for (int i = 0; i < 10; i++) {
-            double d = a.x[i] - b.x[i];
-            distance += d*d;
+    private void printBest(Individual[][] pop) {
+        double best = pop[0][0].fitness;
+        for (int i = 1; i < pop.length; i++) {
+            double f = pop[i][0].fitness;
+            if (best < f) {
+                best = f;
+            }
         }
-        
-        return Math.sqrt(distance);
-    }
-    
-    public double mate(double distance) {
-        double d = 10.0;
-        return Math.exp(-(distance/d)*(distance/d));
+        System.out.println(best);
     }
     
 	public void run()
 	{
-		// Run your algorithm here
-        double P = 1.0;
-        int Q    = 100;
-        if (function[2]) Q = 400;
-        double sigma = 1.0;
-        if (function[3]) sigma = 0.01;
+		// parameters
+        int islands       = 1;    // number of population islands
+        int pop_size      = 1000; // number of individuals per island
+        int exchange      = 5;    // number of individuals to exchange
+        double sigma_init = 1.0;  // initial sigma
+        double pressure   = 0.25; // selection pressure
+        int children      = 100;  // children per pair
         
-        int evals    = 0;
-        int islands  = 1;
-        int pop_size = 1000;
+        // bespoke parameters
+        if (function[1]) {
+            
         
-        // init population
+        } else if (function[2]) {
+            islands       = 5;
+            pop_size      = 200;
+            exchange      = 5;
+            sigma_init    = 1.0;
+            pressure      = 0.2;
+            children      = 80;
+        
+        } else if (function[3]) {
+            sigma_init = 0.01;
+        
+        }
+        
+        // initialize population
         Individual[][] pop = new Individual[islands][pop_size];
         for (int i = 0; i < islands; i++) {
             for (int j = 0; j < pop_size; j++) {
-                pop[i][j]  = new Individual(i*pop_size+j, sigma, rnd_);
+                pop[i][j]  = new Individual(i*pop_size+j, sigma_init, rnd_);
             }
         }
         
-        // calculate fitness
+        // calculate initial fitness
+        int evals = 0;
         for (int i = 0; i < islands; i++) {
             for (int j = 0; j < pop_size; j++) {
                 pop[i][j].fitness = (double) evaluation_.evaluate(pop[i][j].x);
@@ -130,20 +140,34 @@ public class player99 implements ContestSubmission
             for (int n = 0; n < islands; n++) {
                 double r = rnd_.nextDouble();
                 for (int i = 0; i < pop_size; i++) {
-                    if (r < 1 - Math.exp(-(i+1)/P)) {
+                    if (r < 1 - Math.exp(-(i+1)*pressure)) {
+                        // individual i selected for mating
+                        Individual mother = pop[n][i];
+                        
                         for (int j = 0; j < pop_size; j++) {
                             if (i != j) {
                                 r = rnd_.nextDouble();
-                                if (r < mate(distance(pop[n][i], pop[n][j]))) {
-                                    for (int k = 0; k < Q; k++) {
-                                        pop[n][pop_size-k-1].crossover3(pop[n][i], pop[n][j]);
-                                        pop[n][pop_size-k-1].mutation();
+                                if (r < mother.sdf0(pop[n][j])) {
+                                    // individual j selected for mating with individual i
+                                    Individual father = pop[n][j];
+                                    
+                                    // print fitness of best current individual
+                                    printBest(pop);
+
+                                    // create children of individuals i and j
+                                    for (int k = 0; k < children; k++) {
+                                        Individual child = pop[n][pop_size-k-1];
+                                        child.crossover3(mother, father);
+                                        child.mutation();
                                         
                                         if (evals<evaluations_limit_) {
-                                            pop[n][pop_size-k-1].fitness = (double) evaluation_.evaluate(pop[n][pop_size-k-1].x);
+                                            // calculate child's fitness
+                                            child.fitness = (double) evaluation_.evaluate(child.x);
                                             evals++;
                                         }
                                     }
+                                    
+                                    // sort island by fitness
                                     Arrays.sort(pop[n]);
                                     
                                     break;
@@ -151,6 +175,27 @@ public class player99 implements ContestSubmission
                             }
                         }
                         break;
+                    }
+                }
+            }
+            if (1 < islands) {
+                // exchange random individuals between islands
+                for (int n = 0; n < islands; n++) {
+                    for (int i = 0; i < exchange; i++) {
+                        
+                        // select random individual from this island
+                        int r_i = rnd_.nextInt(pop_size);
+                        Individual tmp = pop[n][r_i];
+                        
+                        int r_n;
+                        do {
+                            r_n = rnd_.nextInt(islands);
+                        } while (r_n == n);
+                        int r_j = rnd_.nextInt(pop_size);
+                        
+                        // exchange with random individual from other island
+                        pop[n][r_i]   = pop[r_n][r_j];
+                        pop[r_n][r_j] = tmp;
                     }
                 }
             }

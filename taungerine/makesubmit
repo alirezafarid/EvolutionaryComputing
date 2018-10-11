@@ -1,0 +1,2 @@
+javac -source 1.8 -target 1.8 -cp contest.jar player99.java Individual.java
+jar cmf MainClass.txt submission.jar player99.class Individual.class

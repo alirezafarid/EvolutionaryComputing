@@ -1,0 +1,11 @@
+CMA-ES
+tau_prime
+tau
+beta
+epsilon
+
+islands
+population size
+sigma_init
+selection pressure
+number of children
