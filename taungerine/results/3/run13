@@ -1,0 +1,6 @@
+cd ~/Desktop/assignmentfiles_2017/results/3
+for i in `seq 30 39`;
+do
+    java -jar testrun.jar -submission=player99 -evaluation=BentCigarFunction -seed=$i > storeresults$i.txt
+    mv storeresults$i.txt ..
+done
