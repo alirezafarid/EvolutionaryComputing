@@ -1,0 +1,6 @@
+cd ~/Desktop/assignmentfiles_2017/results/7
+for i in `seq 70 79`;
+do
+    java -jar testrun.jar -submission=player99 -evaluation=SphereEvaluation -seed=$i > storeresults$i.txt
+    mv storeresults$i.txt ..
+done
