@@ -49,8 +49,6 @@ for i in range(S):
     
 plt.plot(scores.mean(0), color="r")
 plt.fill_between(np.linspace(0, N-1, num=N), scores.mean(0) + scores.std(0), scores.mean(0) - scores.std(0), color="r", alpha=0.1)
-#plt.plot(scores.mean(0) - scores.std(0))
-#plt.plot(scores.mean(0) + scores.std(0))
 
 plt.xlim(0, N-1)
 plt.ylim(-1, 11)

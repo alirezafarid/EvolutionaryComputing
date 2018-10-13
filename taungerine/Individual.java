@@ -12,13 +12,15 @@ class Individual implements Comparable<Individual>
     double[] x       = new double[N];
     double   fitness = Double.NEGATIVE_INFINITY;
     
-    // CMA-ES variables
-    double tau_prime = 1.0 / Math.sqrt(2 * N);
-    double tau       = 1.0 / Math.sqrt(2 * Math.sqrt(N));
-    double beta      = 5.00;
-    double epsilon   = 0.01;
+    static final double tau_prime = 1.0 / Math.sqrt(2 * N);
+    static final double tau       = 1.0 / Math.sqrt(2 * Math.sqrt(N));
+    static final double beta      = 5.00;
+    static final double epsilon   = 0.0;
+    
     double[] sigma   = new double[N];
     double[] alpha   = new double[K];
+    
+    static final double d_max = Math.sqrt(100);
     
     public Individual(int id, double sigma_init, Random rnd)
     {
@@ -229,51 +231,157 @@ class Individual implements Comparable<Individual>
         }
     }
     
-    private double norm(Individual a, Individual b, int L) {
+    private double d(Individual a, Individual b) {
         double sum = 0.0;
         for (int i = 0; i < 10; i++) {
-            double y = 1.0;
-            for (int j = 0; j < L; j++) {
-                y *= Math.abs(b.x[i] - a.x[i]);
-            }
-            sum += y;
+            double d_i  = b.x[i] - a.x[i];
+            sum += d_i*d_i;
         }
         
-        return Math.pow(sum, 1.0 / L);
+        return Math.sqrt(sum);
     }
     
-    public double step(Individual b, int L, double r, double p_0, double p_1) {
-        double p;
+    public double step(Individual b, double p_0, double r_0, double p_1, double r_1, double p_2) {
+        double d = d(this, b);
         
-        double norm = norm(this, b, L);
-        
-        if (norm < r) {
-            p = p_0;
+        if (r_1 < d) {
+            return p_2;
+        } else if (r_0 < d) {
+            return p_1;
         } else {
-            p = p_1;
+            return p_0;
         }
-        
-        return p;
     }
     
-    public double normal(Individual b, int L, double sigma) {
-        double norm = norm(this, b, L);
-        
-        return Math.exp(-norm*norm / (2 * sigma*sigma));
-    }
-    
-    public double lognormal(Individual b, int L, double mu, double sigma) {
-        double norm = norm(this, b, L);
-        double arg  = Math.log(norm) - mu;
+    public double normal(Individual b, double mu, double sigma) {
+        double d   = d(this, b);
+        double arg = d - mu;
         
         return Math.exp(-arg*arg / (2 * sigma*sigma));
     }
     
-    // example standard distance function
-    public double sdf0(Individual b) {
-        int L        = 2;
-        double sigma = 10.0;
+    public double lognormal(Individual b, double mu, double sigma) {
+        double d   = d(this, b);
+        double arg = Math.log(d) - mu;
         
-        return this.normal(b, L, sigma);
+        return Math.exp(-arg*arg / (2 * sigma*sigma));
+    }
+    
+    public double smf0(Individual b) {
+        return 0.5;
+    }
+    
+    public double smf1(Individual b) {
+        double p_0 = 0.5;
+        double r_0 = 1.0 / 3.0 * d_max;
+        double p_1 = 0.1;
+        double r_1 = 2.0 / 3.0 * d_max;
+        double p_2 = 0.1;
+        
+        return this.step(b, p_0, r_0, p_1, r_1, p_2);
+    }
+    
+    public double smf2(Individual b) {
+        double p_0 = 0.1;
+        double r_0 = 1.0 / 3.0 * d_max;
+        double p_1 = 0.5;
+        double r_1 = 2.0 / 3.0 * d_max;
+        double p_2 = 0.1;
+        
+        return this.step(b, p_0, r_0, p_1, r_1, p_2);
+    }
+    
+    public double smf3(Individual b) {
+        double p_0 = 0.1;
+        double r_0 = 1.0 / 3.0 * d_max;
+        double p_1 = 0.1;
+        double r_1 = 2.0 / 3.0 * d_max;
+        double p_2 = 0.5;
+        
+        return this.step(b, p_0, r_0, p_1, r_1, p_2);
+    }
+    
+    public double smf4(Individual b) {
+        double mu    = 0.0;
+        double sigma = 0.125 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf5(Individual b) {
+        double mu    = 0.0;
+        double sigma = 0.25 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf6(Individual b) {
+        double mu    = 0.0;
+        double sigma = 0.5 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf7(Individual b) {
+        double mu    = d_max / 2.0;
+        double sigma = 0.125 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf8(Individual b) {
+        double mu    = d_max / 2.0;
+        double sigma = 0.25 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf9(Individual b) {
+        double mu    = d_max / 2.0;
+        double sigma = 0.5 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf10(Individual b) {
+        double mu    = d_max;
+        double sigma = 0.25 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf11(Individual b) {
+        double mu    = d_max;
+        double sigma = 0.5 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf12(Individual b) {
+        double mu    = d_max;
+        double sigma = 1.0 * d_max;
+        
+        return this.normal(b, mu, sigma);
+    }
+    
+    public double smf13(Individual b) {
+        double mu    = 1.0;
+        double sigma = 1.0;
+        
+        return this.lognormal(b, mu, sigma);
+    }
+    
+    public double smf14(Individual b) {
+        double mu    = 1.0;
+        double sigma = 2.0;
+        
+        return this.lognormal(b, mu, sigma);
+    }
+    
+    public double smf15(Individual b) {
+        double mu    = 1.0;
+        double sigma = 3.0;
+        
+        return this.lognormal(b, mu, sigma);
     }
 }
