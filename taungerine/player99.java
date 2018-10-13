@@ -89,28 +89,39 @@ public class player99 implements ContestSubmission
     
 	public void run()
 	{
-		// parameters
-        int islands       = 1;    // number of population islands
-        int pop_size      = 1000; // number of individuals per island
-        int exchange      = 5;    // number of individuals to exchange
-        double sigma_init = 1.0;  // initial sigma
-        double pressure   = 0.25; // selection pressure
-        int children      = 100;  // children per pair
+		// default parameters
+        int islands       = 10;  // number of population islands
+        int pop_size      = 5;   // number of individuals per island
+        int exchange      = 2;   // number of individuals to exchange
+        double sigma_init = 1.0; // initial sigma
+        double pressure   = 0.5; // selection pressure
+        int children      = 1;   // children per pair
         
         // bespoke parameters
-        if (function[1]) {
+        if (function[0]) {
+            // SphereEvaluation
+            // default
             
-        
+        } else if (function[1]) {
+            // BentCigarFunction
+            // default
+            
         } else if (function[2]) {
-            islands       = 5;
-            pop_size      = 200;
-            exchange      = 5;
-            sigma_init    = 1.0;
-            pressure      = 0.2;
-            children      = 80;
+            // SchaffersEvaluation
+            islands    = 80;
+            pop_size   = 2;
+            exchange   = 1;
+            sigma_init = 0.5;
+            pressure   = 2.0;
         
         } else if (function[3]) {
+            // KatsuuraEvaluation
+            islands    = 1;
+            pop_size   = 5000;
+            exchange   = 50;
             sigma_init = 0.01;
+            pressure   = 0.25;
+            children   = 100;
         
         }
         
