@@ -17,10 +17,10 @@ class Individual implements Comparable<Individual>
     static final double beta      = 5.0;
     static final double epsilon   = 0.0;
     
-    double[] sigma   = new double[N];
-    double[] alpha   = new double[K];
+    double[] sigma = new double[N];
+    double[] alpha = new double[K];
     
-    static final double d_max = Math.sqrt(100);
+    static final double d_max = Math.sqrt(1000);
     
     public Individual(int id, double sigma_init, Random rnd)
     {
@@ -163,14 +163,14 @@ class Individual implements Comparable<Individual>
                         return diag(sigma);
                     }
                 } else {
-                    L[i][j] = 1.0 / L[j][j] * (C[i][j] - sum);
+                    L[i][j] = (C[i][j] - sum) / L[j][j];
                 }
             }
         }
         return L;
     }
     
-    private void check(double[][] C, double[][]L) {
+    private void check(double[][] C, double[][] L) {
         double[][] A = new double[N][N];
         
         // multiply L L^T
