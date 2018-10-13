@@ -14,7 +14,7 @@ class Individual implements Comparable<Individual>
     
     static final double tau_prime = 1.0 / Math.sqrt(2 * N);
     static final double tau       = 1.0 / Math.sqrt(2 * Math.sqrt(N));
-    static final double beta      = 5.00;
+    static final double beta      = 5.0;
     static final double epsilon   = 0.0;
     
     double[] sigma   = new double[N];
