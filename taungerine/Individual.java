@@ -257,14 +257,14 @@ class Individual implements Comparable<Individual>
         double d   = d(this, b);
         double arg = d - mu;
         
-        return Math.exp(-arg*arg / (2 * sigma*sigma));
+        return 0.9 * (Math.exp(-arg*arg / (2 * sigma*sigma)) + 1.0/9);
     }
     
     public double lognormal(Individual b, double mu, double sigma) {
         double d   = d(this, b);
         double arg = Math.log(d) - mu;
         
-        return Math.exp(-arg*arg / (2 * sigma*sigma));
+        return 0.9 * (Math.exp(-arg*arg / (2 * sigma*sigma)) + 1.0/9);
     }
     
     public double smf0(Individual b) {
@@ -305,83 +305,83 @@ class Individual implements Comparable<Individual>
         double mu    = 0.0;
         double sigma = d_max / 8.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf5(Individual b) {
         double mu    = 0.0;
         double sigma = d_max / 4.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf6(Individual b) {
         double mu    = 0.0;
         double sigma = d_max / 2.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf7(Individual b) {
         double mu    = d_max / 2.0;
         double sigma = d_max / 8.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf8(Individual b) {
         double mu    = d_max / 2.0;
         double sigma = d_max / 4.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf9(Individual b) {
         double mu    = d_max / 2.0;
         double sigma = d_max / 2.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf10(Individual b) {
         double mu    = d_max;
         double sigma = d_max / 4.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf11(Individual b) {
         double mu    = d_max;
         double sigma = d_max / 2.0;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf12(Individual b) {
         double mu    = d_max;
         double sigma = d_max;
         
-        return this.normal(b, mu, sigma);
+        return 0.9 * (this.normal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf13(Individual b) {
         double mu    = 1.0;
         double sigma = 1.0;
         
-        return this.lognormal(b, mu, sigma);
+        return 0.9 * (this.lognormal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf14(Individual b) {
         double mu    = 2.0;
         double sigma = 1.0;
         
-        return this.lognormal(b, mu, sigma);
+        return 0.9 * (this.lognormal(b, mu, sigma) + 1.0/9);
     }
     
     public double smf15(Individual b) {
         double mu    = 3.0;
         double sigma = 1.0;
         
-        return this.lognormal(b, mu, sigma);
+        return 0.9 * (this.lognormal(b, mu, sigma) + 1.0/9);
     }
 }
