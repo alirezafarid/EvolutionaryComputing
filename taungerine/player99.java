@@ -151,7 +151,7 @@ public class player99 implements ContestSubmission
                     // search for father
                     for (int j = 0; j < pop_size; j++) {
                         double r_j = rnd_.nextDouble();
-                        if (i != j && r_j < mother.smf15(pop[n][j])) {
+                        if (i != j && r_j < mother.smf0(pop[n][j])) {
                             // individual j selected as father
                             Individual father = pop[n][j];
                             

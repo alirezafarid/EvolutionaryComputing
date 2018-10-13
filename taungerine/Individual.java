@@ -6,8 +6,8 @@ class Individual implements Comparable<Individual>
     static final int N = 10;
     static final int K = N * (N - 1) / 2;
 
-    int      id;
-    Random   rnd;
+    int    id;
+    Random rnd;
     
     double[] x       = new double[N];
     double   fitness = Double.NEGATIVE_INFINITY;
@@ -20,7 +20,7 @@ class Individual implements Comparable<Individual>
     double[] sigma = new double[N];
     double[] alpha = new double[K];
     
-    static final double d_max = Math.sqrt(1000);
+    static final double d_max = Math.sqrt(1000.0);
     
     public Individual(int id, double sigma_init, Random rnd)
     {
