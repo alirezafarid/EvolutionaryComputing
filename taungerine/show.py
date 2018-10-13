@@ -44,14 +44,26 @@ print("Average Score:   %7g      SD: %7g   " % (final_scores.mean(), final_score
 print("  [%g, %g]" % (final_scores.min(), final_scores.max()))
 print("Average Runtime: %7g ms   SD: %7g ms" % (runtimes.mean(),     runtimes.std()))
 
+losses = 10.0 - scores
+
 for i in range(S):
-    plt.plot(scores[i], color="k", alpha=0.1/math.sqrt(S))
-    
-plt.plot(scores.mean(0), color="r")
-plt.fill_between(np.linspace(0, N-1, num=N), scores.mean(0) + scores.std(0), scores.mean(0) - scores.std(0), color="r", alpha=0.1)
+    plt.plot(losses[i], color="k", alpha=0.1/math.sqrt(S))
+
+# plot mean taken in linear space
+loss_mean = losses.mean(0)
+plt.plot(loss_mean, color="r")
+
+# plot std taken in log space
+loss_std = np.exp(np.log(losses).std(0))
+upper    = loss_mean * loss_std
+lower    = loss_mean / loss_std
+plt.fill_between(np.linspace(0, N-1, num=N), upper, lower, color="r", alpha=0.1)
 
 plt.xlim(0, N-1)
-plt.ylim(-1, 11)
+#plt.ylim(10**np.floor(np.log10(lower.min())-1), 10E1)
+plt.ylim(10E-9, 10E1)
+
+plt.yscale("log")
 
 plt.xlabel("Generations")
 plt.ylabel("Score")
