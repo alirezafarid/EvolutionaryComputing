@@ -372,15 +372,15 @@ class Individual implements Comparable<Individual>
     }
     
     public double smf14(Individual b) {
-        double mu    = 1.0;
-        double sigma = 2.0;
+        double mu    = 2.0;
+        double sigma = 1.0;
         
         return this.lognormal(b, mu, sigma);
     }
     
     public double smf15(Individual b) {
-        double mu    = 1.0;
-        double sigma = 3.0;
+        double mu    = 3.0;
+        double sigma = 1.0;
         
         return this.lognormal(b, mu, sigma);
     }
