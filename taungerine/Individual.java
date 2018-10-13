@@ -303,63 +303,63 @@ class Individual implements Comparable<Individual>
     
     public double smf4(Individual b) {
         double mu    = 0.0;
-        double sigma = 0.125 * d_max;
+        double sigma = d_max / 8.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf5(Individual b) {
         double mu    = 0.0;
-        double sigma = 0.25 * d_max;
+        double sigma = d_max / 4.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf6(Individual b) {
         double mu    = 0.0;
-        double sigma = 0.5 * d_max;
+        double sigma = d_max / 2.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf7(Individual b) {
         double mu    = d_max / 2.0;
-        double sigma = 0.125 * d_max;
+        double sigma = d_max / 8.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf8(Individual b) {
         double mu    = d_max / 2.0;
-        double sigma = 0.25 * d_max;
+        double sigma = d_max / 4.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf9(Individual b) {
         double mu    = d_max / 2.0;
-        double sigma = 0.5 * d_max;
+        double sigma = d_max / 2.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf10(Individual b) {
         double mu    = d_max;
-        double sigma = 0.25 * d_max;
+        double sigma = d_max / 4.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf11(Individual b) {
         double mu    = d_max;
-        double sigma = 0.5 * d_max;
+        double sigma = d_max / 2.0;
         
         return this.normal(b, mu, sigma);
     }
     
     public double smf12(Individual b) {
         double mu    = d_max;
-        double sigma = 1.0 * d_max;
+        double sigma = d_max;
         
         return this.normal(b, mu, sigma);
     }
