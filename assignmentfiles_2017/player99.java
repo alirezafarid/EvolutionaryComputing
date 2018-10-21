@@ -233,7 +233,7 @@ public class player99 implements ContestSubmission
                             // create children of mother and father
                             for (int k = 0; k < children; k++) {
                                 Individual child = pop[n][pop_size-k-1];
-                                child.crossover3(mother, father);
+                                child.crossover(mother, father);
                                 child.mutation();
                                 
                                 if (evals < evaluations_limit_) {

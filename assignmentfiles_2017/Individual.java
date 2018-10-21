@@ -50,49 +50,6 @@ class Individual implements Comparable<Individual>
     
     public void crossover(Individual a, Individual b)
     {
-        // crossover sigma
-        for (int i = 0; i < N; i++) {
-            double r = rnd.nextDouble();
-            sigma[i] = (r * a.sigma[i] + (1.0 - r) * b.sigma[i] ) / 2;
-        }
-        
-        // crossover alpha
-        for (int i = 0; i < K; i++) {
-            double r = rnd.nextDouble();
-            alpha[i] = (r * a.alpha[i] + (1.0 - r) * b.alpha[i] ) / 2;
-        }
-        
-        // crossover x
-        for (int i = 0; i < N; i++) {
-            double r = rnd.nextDouble();
-            x[i]     = (r * a.x[i]     + (1.0 - r) * b.x[i]     ) / 2;
-        }
-    }
-    
-    public void crossover2(Individual a, Individual b)
-    {
-        int[] source = new int[N];
-        for (int i = 0; i < N; i++) {
-            source[i] = rnd.nextInt(2);
-        }
-        
-        // recombine sigma and x
-        for (int i = 0; i < N; i++) {
-            sigma[i] = source[i]*a.sigma[i] + (1 - source[i])*b.sigma[i];
-            x[i]     = source[i]*a.x[i]     + (1 - source[i])*b.x[i];
-        }
-        
-        // recombine alpha
-        for (int i = 1; i < N; i++) {
-            for (int j = 0; j < i; j++) {
-                int k = i * (i - 1) / 2 + j;
-                alpha[k] = source[i]*source[j]*a.alpha[k] + (1 - source[i])*(1 - source[j])*b.alpha[k];
-            }
-        }
-    }
-    
-    public void crossover3(Individual a, Individual b)
-    {
         double[] source = new double[N];
         for (int i = 0; i < N; i++) {
             source[i] = rnd.nextDouble();
