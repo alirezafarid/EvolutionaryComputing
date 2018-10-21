@@ -170,28 +170,6 @@ class Individual implements Comparable<Individual>
         return L;
     }
     
-    private void check(double[][] C, double[][] L) {
-        double[][] A = new double[N][N];
-        
-        // multiply L L^T
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < N; k++) {
-                    A[i][j] += L[i][k] * L[j][k];
-                }
-            }
-        }
-        
-        double diff = 0.0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                diff += Math.abs(C[i][j] - A[i][j]);
-            }
-        }
-        System.out.print("Difference: ");
-        System.out.println(diff);
-    }
-    
     public void mutation()
     {
         // mutate sigma
@@ -218,7 +196,6 @@ class Individual implements Comparable<Individual>
         }
         double[][] C = covarianceMatrix();
         double[][] L = cholesky(C);
-        //check(C, L);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 x[i] += L[i][j] * v[j];
@@ -231,10 +208,10 @@ class Individual implements Comparable<Individual>
         }
     }
     
-    private double d(Individual a, Individual b) {
+    public double d(Individual b) {
         double sum = 0.0;
         for (int i = 0; i < 10; i++) {
-            double d_i  = b.x[i] - a.x[i];
+            double d_i  = b.x[i] - this.x[i];
             sum += d_i*d_i;
         }
         
@@ -242,7 +219,7 @@ class Individual implements Comparable<Individual>
     }
     
     public double step(Individual b, double p_0, double r_0, double p_1, double r_1, double p_2) {
-        double d = d(this, b);
+        double d = this.d(b);
         
         if (r_1 < d) {
             return p_2;
@@ -254,17 +231,17 @@ class Individual implements Comparable<Individual>
     }
     
     public double normal(Individual b, double mu, double sigma) {
-        double d   = d(this, b);
+        double d   = this.d(b);
         double arg = d - mu;
         
-        return 0.9 * (Math.exp(-arg*arg / (2 * sigma*sigma)) + 1.0/9);
+        return Math.exp(-arg*arg / (2 * sigma*sigma)) * 0.99 + 0.01;
     }
     
     public double lognormal(Individual b, double mu, double sigma) {
-        double d   = d(this, b);
+        double d   = this.d(b);
         double arg = Math.log(d) - mu;
         
-        return 0.9 * (Math.exp(-arg*arg / (2 * sigma*sigma)) + 1.0/9);
+        return Math.exp(-arg*arg / (2 * sigma*sigma)) * 0.99 + 0.01;
     }
     
     public double smf0(Individual b) {
@@ -274,27 +251,27 @@ class Individual implements Comparable<Individual>
     public double smf1(Individual b) {
         double p_0 = 0.5;
         double r_0 = 1.0 / 3.0 * d_max;
-        double p_1 = 0.1;
+        double p_1 = 0.01;
         double r_1 = 2.0 / 3.0 * d_max;
-        double p_2 = 0.1;
+        double p_2 = 0.01;
         
         return this.step(b, p_0, r_0, p_1, r_1, p_2);
     }
     
     public double smf2(Individual b) {
-        double p_0 = 0.1;
+        double p_0 = 0.01;
         double r_0 = 1.0 / 3.0 * d_max;
         double p_1 = 0.5;
         double r_1 = 2.0 / 3.0 * d_max;
-        double p_2 = 0.1;
+        double p_2 = 0.01;
         
         return this.step(b, p_0, r_0, p_1, r_1, p_2);
     }
     
     public double smf3(Individual b) {
-        double p_0 = 0.1;
+        double p_0 = 0.01;
         double r_0 = 1.0 / 3.0 * d_max;
-        double p_1 = 0.1;
+        double p_1 = 0.01;
         double r_1 = 2.0 / 3.0 * d_max;
         double p_2 = 0.5;
         
