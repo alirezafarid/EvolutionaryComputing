@@ -1,4 +1,0 @@
-Your code has thrown an Exception/Error!
-This would halt execution (the best score achieved so far would be assigned)
-Score: 2.56713471506453E-10
-Runtime: 6ms
